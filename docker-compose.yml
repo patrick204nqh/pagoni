@@ -1,0 +1,40 @@
+version: "3.9"
+
+
+services:
+  gin:
+    image: patrick204nqh/pagoni:latest
+    container_name: pagoni-gin
+    command: go run main.go
+    stdin_open: true
+    tty: true
+    env_file: .env
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/var/www/backend
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14
+    container_name: pagoni-postgres
+    environment:
+      POSTGRES_DB: $DATABASE_NAME
+      POSTGRES_USER: $DATABASE_USER
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
+    ports:
+      - 5432:5432
+    volumes:
+      - pagoni_data:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: pagoni-mailhog
+    ports:
+      - 8025:8025
+      - 1025:1025
+
+
+volumes:
+  pagoni_data:
