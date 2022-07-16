@@ -13,6 +13,7 @@ services:
       - 8080:8080
     volumes:
       - ./:/var/www/backend
+      - go_pkg:/go
     depends_on:
       - postgres
 
@@ -26,7 +27,20 @@ services:
     ports:
       - 5432:5432
     volumes:
+      - $PWD/docker/postgres/init-scripts/:/docker-entrypoint-initdb.d/
       - pagoni_data:/var/lib/postgresql/data
+      
+  redis:
+    image: redis:4.0
+    container_name: pagoni-redis
+    ports:
+      - 6379:6379
+
+  redis-gui:
+    image: marian/rebrow:latest
+    container_name: pagoni-redis-gui
+    ports:
+      - 5001:5001
 
   mailhog:
     image: mailhog/mailhog
@@ -38,3 +52,4 @@ services:
 
 volumes:
   pagoni_data:
+  go_pkg:
